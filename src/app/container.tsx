@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { Spin } from 'antd';
 
 import { HeaderCom, SideBarCom } from "@components";
 import { theme, user } from "@hooks";
@@ -11,6 +12,7 @@ interface ContainerProps {
 export const Container: React.FC<ContainerProps> = ({ children }) => {
   const { handleTheme } = theme.useTheme();
   const userData: any = user.useGetUser();
+  const sessionData = user.useGetSession();
 
   useEffect(() => {
     const onHandleTheme = () => {
@@ -21,6 +23,20 @@ export const Container: React.FC<ContainerProps> = ({ children }) => {
     onHandleTheme();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (sessionData.isLoading) {
+    return (
+      <div className="flex h-screen">
+        <SideBarCom />
+        <div className="flex-1 flex flex-col">
+          <HeaderCom />
+          <div className="items-center justify-normal">
+            <Spin />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return userData?.data?.data?.user ? (
     <div className="flex h-screen">

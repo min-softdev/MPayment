@@ -29,3 +29,18 @@ export const useGetUser = () => {
 
   return useQuery(queryOptions);
 };
+
+export const useGetSession = () => {
+  const queryOptions = {
+    queryKey: ["usersession"],
+    queryFn: async () => {
+      const data = await supabase.auth.getSession();
+
+      return data;
+    },
+    cacheTime: 0, // Disable caching
+    staleTime: 0, // Always consider data stale
+  };
+
+  return useQuery(queryOptions);
+};
