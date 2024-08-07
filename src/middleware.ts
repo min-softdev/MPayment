@@ -25,5 +25,15 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/product/list"], // Match all routes except those starting with /auth
+  matcher: [
+    "/",
+    "/config/list",
+    "/device/list",
+    "/merchant/list",
+    "/notification/list",
+    "/order/list",
+    "/product/list",
+    "/setting/list",
+    "/user/list",
+  ],
 };

@@ -9,8 +9,10 @@ interface ContainerProps {
 }
 
 export const Container: React.FC<ContainerProps> = ({ children }) => {
-  const { logInData } = auth.useAuth();
+  const { logInData, ...props } = auth.useAuth();
   const { handleTheme } = theme.useTheme();
+
+  console.log('object :>> ', logInData, props);
 
   useEffect(() => {
     const onHandleTheme = () => {

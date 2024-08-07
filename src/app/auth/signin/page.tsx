@@ -22,9 +22,9 @@ export default function SignIn() {
           console.error(data.error);
           return;
         }
+        router.replace("/");
         document.cookie = `sb-auth-token=${data?.data?.session.access_token}; path=/;`;
         dispatch(authReducer.setAuth({ logInData: data }));
-        router.replace("/");
       },
       onError: (error: any) => {
         console.log("error", error);
