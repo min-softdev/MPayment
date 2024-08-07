@@ -85,10 +85,24 @@ export const SideBarCom = () => {
   const pathName = usePathname();
   const router = useRouter();
   const signOut: any = auth.useSignOut();
+  const { authReducer, dispatch } = auth.useAuth();
 
   const handleLogOut = async () => {
-    await signOut.mutate();
-    router.replace("/auth/signin");
+    signOut.mutate(null, {
+      onSuccess: (data: any) => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+        document.cookie =
+          "sb-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        dispatch(authReducer.setAuth({ logInData: null }));
+        router.replace("/auth/signin");
+      },
+      onError: (error: any) => {
+        console.error("Sign-out error:", error);
+      },
+    });
   };
 
   const handleRouteChange = useCallback(
@@ -162,7 +176,9 @@ export const SideBarCom = () => {
                         <li
                           key={subItemIndex}
                           className={`${
-                            pathName === subItem.path ? "bg-active-gradient" : ""
+                            pathName === subItem.path
+                              ? "bg-active-gradient"
+                              : ""
                           } hover:text-hover rounded-[5px]`}
                         >
                           <Link

@@ -2,12 +2,13 @@
 import { useRouter } from "next/navigation";
 import { Form, Input, Button, Checkbox } from "antd";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
-
 import { auth } from "@hooks";
+import { supabase } from "@store";
 
 export default function SignIn() {
   const router = useRouter();
   const signIn: any = auth.useSignIn();
+  const { authReducer, dispatch } = auth.useAuth();
 
   const onFinish = async (values: any) => {
     let postData: any = {
@@ -16,15 +17,21 @@ export default function SignIn() {
     };
 
     signIn.mutate(postData, {
-      onSuccess: (data: any) => {
-        if (data?.data?.user) {
-          router.replace("/");
+      onSuccess: async (data: any) => {
+        if (data.error) {
+          console.error(data.error);
+          return;
         }
+        document.cookie = `sb-auth-token=${data?.data?.session.access_token}; path=/;`;
+        dispatch(authReducer.setAuth({ logInData: data }));
+        router.replace("/");
       },
       onError: (error: any) => {
         console.log("error", error);
       },
     });
+
+    // router.replace("/");
   };
 
   return (
